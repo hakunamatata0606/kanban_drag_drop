@@ -18,6 +18,7 @@ const (
 	UpdateTaskStatusMessage
 	GetListTask
 	MessageAck
+	ListStatusUpdate
 	ListTaskUpdate
 )
 
@@ -74,7 +75,7 @@ func handleClient(c *client) {
 func (c *client) sendMessage(msg []byte) {
 	err := c.conn.WriteMessage(websocket.BinaryMessage, msg)
 	if err != nil {
-		log.Printf("service::sendMessage(): client[%d] failed to send message\n", c.id)
+		log.Printf("service::sendMessage(): client[%d] failed to send message - %s\n", c.id, err)
 		c.close()
 	}
 }

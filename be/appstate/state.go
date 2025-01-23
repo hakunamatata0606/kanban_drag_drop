@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DEFAULT_ENV_PATH = "/home/bao/selfproject/kanban_drag_drop/be/env.yaml"
+	DEFAULT_ENV_PATH = "/home/bao/selfproj/kanban_drag_drop/be/env.yaml"
 )
 
 var DEFAULT_QUERY_TIMEOUT int64 = 20

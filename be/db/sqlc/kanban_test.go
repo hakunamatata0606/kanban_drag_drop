@@ -9,6 +9,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestListStatus(t *testing.T) {
+	appState := appstate.GetAppState()
+	ctx := context.Background()
+
+	listStatus, err := db.ListStatus(ctx, appState.Db)
+	assert.Nil(t, err)
+	assert.Equal(t, []string{"idea", "todo", "inprogress", "inreview", "done"}, listStatus)
+}
+
 func TestListTasks(t *testing.T) {
 	appState := appstate.GetAppState()
 	ctx := context.Background()

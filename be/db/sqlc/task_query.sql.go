@@ -75,24 +75,24 @@ func (q *Queries) InsertTask(ctx context.Context, arg InsertTaskParams) error {
 }
 
 const listStatus = `-- name: ListStatus :many
-select id, name
+select name
 from status
 order by id asc
 `
 
-func (q *Queries) ListStatus(ctx context.Context) ([]Status, error) {
+func (q *Queries) ListStatus(ctx context.Context) ([]string, error) {
 	rows, err := q.db.QueryContext(ctx, listStatus)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Status
+	var items []string
 	for rows.Next() {
-		var i Status
-		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+		var name string
+		if err := rows.Scan(&name); err != nil {
 			return nil, err
 		}
-		items = append(items, i)
+		items = append(items, name)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err

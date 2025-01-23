@@ -59,11 +59,32 @@ func TestKanbanServiceSimple(t *testing.T) {
 	u := "ws" + strings.TrimPrefix(s.URL, "http")
 	ws, _, err := websocket.DefaultDialer.Dial(u, nil)
 	assert.Nil(t, err)
-	msg := prepareCreateMessage(t, "test1", "title1", "desc1", "idea")
+
+	msgtype, msg, err := ws.ReadMessage()
+	assert.Equal(t, msgtype, websocket.BinaryMessage)
+	assert.Nil(t, err)
+	assert.Equal(t, service.ListStatusUpdate, int(msg[0]))
+	msg = msg[1:]
+	var listStatus []string
+	err = json.Unmarshal(msg, &listStatus)
+	assert.Nil(t, err)
+	assert.Equal(t, []string{"idea", "todo", "inprogress", "inreview", "done"}, listStatus)
+
+	msgtype, msg, err = ws.ReadMessage()
+	assert.Equal(t, msgtype, websocket.BinaryMessage)
+	assert.Nil(t, err)
+	assert.Equal(t, service.ListTaskUpdate, int(msg[0]))
+	// msg = msg[1:]
+	var resp1 []db.ListTasksRow
+	// err = json.Unmarshal(msg, &resp1)
+	// assert.Nil(t, err)
+	// assert.Equal(t, []db.ListTasksRow(nil), resp1)
+
+	msg = prepareCreateMessage(t, "test1", "title1", "desc1", "idea")
 	err = ws.WriteMessage(websocket.BinaryMessage, msg)
 	assert.Nil(t, err)
 
-	msgtype, msg, err := ws.ReadMessage()
+	msgtype, msg, err = ws.ReadMessage()
 	assert.Equal(t, msgtype, websocket.BinaryMessage)
 	assert.Nil(t, err)
 	assert.Equal(t, service.MessageAck, int(msg[0]))
@@ -78,7 +99,6 @@ func TestKanbanServiceSimple(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, service.ListTaskUpdate, int(msg[0]))
 	msg = msg[1:]
-	var resp1 []db.ListTasksRow
 	err = json.Unmarshal(msg, &resp1)
 	assert.Nil(t, err)
 	assert.Equal(t, []db.ListTasksRow{db.ListTasksRow{Name: "test1", Title: "title1", Description: "desc1", Status: "idea"}}, resp1)

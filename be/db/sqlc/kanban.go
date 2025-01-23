@@ -100,3 +100,12 @@ func UpdateTask(ctx context.Context, dbp *sql.DB, updateRequest *UpdateTaskReque
 	}
 	return err
 }
+
+func ListStatus(ctx context.Context, dbp *sql.DB) ([]string, error) {
+	queries := New(dbp)
+	listStatus, err := queries.ListStatus(ctx)
+	if err != nil {
+		log.Println("db::ListStatus(): failed to get list status - ", err)
+	}
+	return listStatus, err
+}

@@ -4,7 +4,7 @@ from tasks
 inner join status on tasks.status_id = status.id;
 
 -- name: ListStatus :many
-select id, name
+select name
 from status
 order by id asc;
 
